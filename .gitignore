@@ -1,0 +1,13 @@
+# Node
+node_modules/
+npm-debug.log
+logs
+
+# Vite/React
+client/dist/
+
+# Server
+server/node_modules/
+
+# Firebase
+firebase/*.secret
