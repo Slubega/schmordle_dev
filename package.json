@@ -1,0 +1,12 @@
+{
+  "name": "schmordle-monorepo",
+  "version": "1.0.0",
+  "description": "The root package.json for Schmordle",
+  "private": true,
+  "workspaces": [
+    "client"
+  ],
+  "scripts": {
+    "start": "npm run dev --workspace=client"
+  }
+}

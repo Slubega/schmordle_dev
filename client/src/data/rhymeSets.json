@@ -1,0 +1,20 @@
+[
+  {
+    "id": "set_1",
+    "label": "The -AKE Group",
+    "theme": "Common words ending in -AKE",
+    "words": ["BAKE", "CAKE", "FAKE", "MAKE", "TAKE", "WAKE", "LAKE", "SHAKE", "SNAKE", "BREAK"]
+  },
+  {
+    "id": "set_2",
+    "label": "The -IGHT Group",
+    "theme": "Illumination and intensity",
+    "words": ["LIGHT", "MIGHT", "NIGHT", "RIGHT", "SIGHT", "TIGHT", "FIGHT", "BRIGHT", "PLIGHT", "KNIGHT"]
+  },
+  {
+    "id": "set_3",
+    "label": "The -OUND Group",
+    "theme": "Objects and actions related to sound",
+    "words": ["SOUND", "FOUND", "ROUND", "MOUND", "POUND", "WOUND", "HOUND", "GROUND", "PROUD", "CROWD"]
+  }
+]
