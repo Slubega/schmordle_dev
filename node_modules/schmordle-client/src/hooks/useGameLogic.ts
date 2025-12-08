@@ -1,98 +1,115 @@
-import { useState, useCallback, useEffect } from 'react';
-import { TileState, GuessResult, RhymeSet } from '../interfaces/types';
-import { getGuessFeedback, isValidGuess, checkWin } from '../utils/gameUtils';
+import { useCallback, useEffect, useState } from "react";
+import type { GuessResult, RhymeSet } from "../interfaces/types";
+import { checkWin, getGuessFeedback } from "../utils/gameUtils";
+import { isEnglishWord } from "../utils/dictionary";
 
-const MAX_GUESSES = 6;
 const WORD_LENGTH = 5;
+const MAX_GUESSES = 6;
 
-// Shared game state logic hook for Solitaire/Daily/Multiplayer (input/grid logic)
 export const useGameLogic = (
-  rhymeSet: RhymeSet | null, 
-  onWin: (guess: string) => void,
-  onLose: () => void
+  rhymeSet: RhymeSet | null,
+  handleWin: (guess: string) => void,
+  handleLose: () => void
 ) => {
-  const [currentGuess, setCurrentGuess] = useState<string>('');
+  const [currentGuess, setCurrentGuess] = useState("");
   const [guesses, setGuesses] = useState<GuessResult[]>([]);
   const [isGameOver, setIsGameOver] = useState(false);
-  const [error, setError] = useState<string>('');
+  const [error, setError] = useState<string | null>(null);
 
+  // Reset when the rhyme set changes
   useEffect(() => {
-    if (rhymeSet) {
-        // Reset state when a new rhyme set is loaded
-        setCurrentGuess('');
-        setGuesses([]);
-        setIsGameOver(false);
-        setError('');
-    }
-  }, [rhymeSet]);
-
-  const onKey = useCallback((key: string) => {
-    if (isGameOver || !rhymeSet) return;
-
-    if (key === 'ENTER') {
-      submitGuess();
-    } else if (key === 'BACKSPACE') {
-      setCurrentGuess((prev) => prev.slice(0, -1));
-    } else if (key.length === 1 && /^[a-zA-Z]$/.test(key)) {
-      if (currentGuess.length < WORD_LENGTH) {
-        setCurrentGuess((prev) => prev + key.toUpperCase());
-      }
-    }
-  }, [currentGuess, isGameOver, rhymeSet]);
+    setCurrentGuess("");
+    setGuesses([]);
+    setIsGameOver(false);
+    setError(null);
+  }, [rhymeSet?.id]);
 
   const submitGuess = useCallback(() => {
-    if (currentGuess.length !== WORD_LENGTH) {
-      setError('Not enough letters!');
-      setTimeout(() => setError(''), 1000);
+    if (!rhymeSet) return;
+    if (isGameOver) return;
+
+    const guess = currentGuess.toUpperCase();
+
+    if (guess.length !== WORD_LENGTH) {
+      setError("Word must be 5 letters.");
       return;
     }
 
-    if (!rhymeSet) {
-        setError("Game not initialized.");
+    void (async () => {
+      try {
+        // backend validation
+        const res = await fetch("/api/guess", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ guess, rhymeSetId: rhymeSet.id }),
+        });
+
+        const data = await res.json().catch(() => ({} as any));
+
+        // If backend rejects, just log; don't block local flow
+        if (!res.ok || data?.valid === false) {
+          console.warn("Backend validation rejected guess:", data?.message ?? "invalid");
+        }
+
+        // Dictionary validation: require a real English word
+        const isWord = await isEnglishWord(guess);
+        if (!isWord) {
+          setError("Not a valid word.");
+          return;
+        }
+
+        const feedback = getGuessFeedback(guess, rhymeSet);
+        const didWin = checkWin(guess, rhymeSet);
+        const next: GuessResult = { guess, feedback, isWin: didWin };
+
+        setGuesses((prev) => [...prev, next]);
+        setCurrentGuess("");
+        setError(null);
+
+        if (didWin) {
+          setIsGameOver(true);
+          handleWin(guess);
+          return;
+        }
+
+        const nextGuessCount = guesses.length + 1;
+        if (nextGuessCount >= MAX_GUESSES) {
+          setIsGameOver(true);
+          handleLose();
+        }
+      } catch (e) {
+        console.error("POST /api/guess failed:", e);
+        setError("Backend error validating guess.");
+      }
+    })();
+  }, [rhymeSet, isGameOver, currentGuess, guesses.length, handleWin, handleLose]);
+
+  const onKey = useCallback(
+    (key: string) => {
+      if (!rhymeSet) return;
+      if (isGameOver) return;
+
+      const k = key.toUpperCase();
+
+      // letters
+      if (/^[A-Z]$/.test(k) && currentGuess.length < WORD_LENGTH) {
+        setCurrentGuess((prev) => (prev + k).slice(0, WORD_LENGTH));
         return;
-    }
+      }
 
-    // Check against the full word list (can be relaxed for a full dictionary check later)
-    if (!rhymeSet.words.includes(currentGuess)) {
-      setError('Word not in rhyme set (yet)!');
-      setTimeout(() => setError(''), 1000);
-      return;
-    }
+      // backspace
+      if (k === "BACKSPACE" || k === "⌫") {
+        setCurrentGuess((prev) => prev.slice(0, -1));
+        return;
+      }
 
-    // 1. Generate feedback
-    const feedback: TileState[] = getGuessFeedback(currentGuess, rhymeSet);
-    const isWin = checkWin(currentGuess, rhymeSet);
-    
-    const newGuessResult: GuessResult = {
-        guess: currentGuess,
-        feedback,
-        isWin,
-    }
+      // enter
+      if (k === "ENTER") {
+        submitGuess();
+      }
+    },
+    [rhymeSet, isGameOver, currentGuess.length, submitGuess]
+  );
 
-    // 2. Update state
-    setGuesses((prev) => [...prev, newGuessResult]);
-    setCurrentGuess('');
-
-    // 3. Check for game over
-    if (isWin) {
-      setIsGameOver(true);
-      onWin(currentGuess);
-      return;
-    }
-
-    if (guesses.length + 1 >= MAX_GUESSES) {
-      setIsGameOver(true);
-      onLose();
-    }
-
-  }, [currentGuess, guesses.length, rhymeSet, onWin, onLose]);
-
-  return {
-    currentGuess,
-    guesses,
-    isGameOver,
-    error,
-    onKey,
-    submitGuess,
-  };
-}; 
+  return { currentGuess, guesses, isGameOver, error, onKey };
+};

@@ -8,6 +8,12 @@ export const getRandomRhymeSet = (): RhymeSet => {
   return sets[randomIndex];
 };
 
+// For now, the "solution" is the first word in the set.
+// This keeps the game winnable without leaking the answer up front.
+const getSolutionWord = (rhymeSet: RhymeSet): string => {
+  return (rhymeSet.words[0] || "").toUpperCase();
+};
+
 /**
  * Generates the Wordle-style tile coloring feedback for a guess against the rhyme set.
  * In Schmordle, the 'solution' is the entire rhyme set. We check against all words
@@ -19,30 +25,7 @@ export const getRandomRhymeSet = (): RhymeSet => {
 export const getGuessFeedback = (guess: string, rhymeSet: RhymeSet): TileState[] => {
   const guessUpper = guess.toUpperCase();
   const feedback: TileState[] = [];
-  const words = rhymeSet.words.map(w => w.toUpperCase());
-
-  // Check for an exact win first
-  const isWin = words.includes(guessUpper);
-
-  if (isWin) {
-    // If the word is a win, all tiles are correct
-    for (const letter of guessUpper) {
-      feedback.push({ letter, state: 'correct' });
-    }
-    return feedback;
-  }
-
-  // --- Core Wordle logic for non-winning words ---
-  
-  // 1. Identify 'correct' letters (green) by comparing against all possible solution words.
-  //    A letter is 'correct' if it's in the correct position in *any* word in the set.
-  //    This makes the game harder/different than standard Wordle.
-
-  // NOTE: For simplicity and the spirit of Schmordle (where only a full win matters),
-  // we'll revert to the standard Wordle coloring but *only* for feedback,
-  // where the 'solution' is an *arbitrary* word from the set.
-  // Let's use the first word in the set for the coloring logic.
-  const targetWord = words[0]; 
+  const targetWord = getSolutionWord(rhymeSet);
   const targetLetters = targetWord.split('');
   
   // To handle duplicate letters, we create a mutable map of available letters in the target.
@@ -85,5 +68,5 @@ export const isValidGuess = (guess: string, rhymeSet: RhymeSet): boolean => {
 
 // Check if the current game is won.
 export const checkWin = (guess: string, rhymeSet: RhymeSet): boolean => {
-  return rhymeSet.words.includes(guess.toUpperCase());
+  return guess.toUpperCase() === getSolutionWord(rhymeSet);
 };

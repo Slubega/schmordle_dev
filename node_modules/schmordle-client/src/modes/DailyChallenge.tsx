@@ -2,7 +2,8 @@ import React, { useState, useEffect, useCallback } from 'react';
 import GameGrid from '../components/GameGrid';
 import Keyboard from '../components/Keyboard';
 import { useGameLogic } from '../hooks/useGameLogic';
-import { getOrCreateDailyChallenge, getRhymeSetById } from '../firebase/firestore';
+import { fetchDailyChallenge } from '../api/daily';
+import { fetchRhymeSet } from '../api/rhymeSets';
 import { DailyChallengeConfig, RhymeSet } from '../interfaces/types';
 import { getStats, updateStats } from '../utils/localStorageUtils';
 
@@ -19,12 +20,12 @@ const DailyChallenge: React.FC = () => {
       setLoading(true);
       try {
         // Fetch config for today. This also creates one if it doesn't exist.
-        const dailyConfig = await getOrCreateDailyChallenge(today);
+        const dailyConfig = await fetchDailyChallenge(today);
         setConfig(dailyConfig);
         
         // Load the rhyme set
-        const set = getRhymeSetById(dailyConfig.rhymeSetId);
-        setRhymeSet(set || null);
+        const rhyme = await fetchRhymeSet(dailyConfig.rhymeSetId);
+        setRhymeSet(rhyme);
         
         // Check if the user has already played this daily
         const stats = getStats();
@@ -88,8 +89,9 @@ const DailyChallenge: React.FC = () => {
         <h2>Daily Challenge: {config.date} 🗓️</h2>
         <div className="game-message result-message">
           <p className='win'>
-            **Completed!** You already solved today's Schmordle.
+            Completed
           </p>
+          <p>You solved today's Schmordle.</p>
           <p>Come back tomorrow for a new rhyme set.</p>
         </div>
       </div>
@@ -97,13 +99,13 @@ const DailyChallenge: React.FC = () => {
   }
 
 
-  const winMessage = `You won! **${winWord}** is a correct word in the **${rhymeSet.label}** set. Your win has been logged (locally).`;
+  const winMessage = `You won! ${winWord} is a correct word in the ${rhymeSet.label} set. Your win has been logged (locally).`;
   const loseMessage = `Game over. The correct words included: ${rhymeSet.words.join(', ')}.`;
 
   return (
     <div className="game-mode-container">
       <h2>Daily Challenge: {config.date} 🗓️</h2>
-      <p className="rhyme-theme">**Theme:** {rhymeSet.theme}</p>
+      <p className="rhyme-theme">Theme: {rhymeSet.theme}</p>
       
       <GameGrid 
         currentGuess={currentGuess} 

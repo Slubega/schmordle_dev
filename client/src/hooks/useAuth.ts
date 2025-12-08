@@ -8,8 +8,21 @@ import { User, onAuthStateChanged, signInAnonymously } from 'firebase/auth';
 export const useAuth = () => {
   const [user, setUser] = useState<User | null>(null);
   const [loading, setLoading] = useState(true);
+  const useFakeAuth = import.meta.env.VITE_USE_FAKE_AUTH === "true";
 
   useEffect(() => {
+    if (useFakeAuth) {
+      // Local dev bypass when Firebase config is missing
+      setUser({
+        uid: "local-dev-user",
+        displayName: "Local Dev",
+        email: undefined,
+        isAnonymous: true,
+      } as unknown as User);
+      setLoading(false);
+      return;
+    }
+
     const unsubscribe = onAuthStateChanged(auth, (currentUser) => {
       if (currentUser) {
         setUser(currentUser);

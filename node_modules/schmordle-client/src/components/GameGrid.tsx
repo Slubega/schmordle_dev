@@ -19,7 +19,11 @@ const GameGrid: React.FC<GameGridProps> = ({ currentGuess, guesses, isGameOver }
     // The useGameLogic hook handles the key input, so we don't need a separate listener here
   }, []);
 
-  const emptyRows = Array(MAX_GUESSES - guesses.length - 1).fill(null);
+  const remaining = Math.max(
+    0,
+    MAX_GUESSES - guesses.length - (isGameOver ? 0 : 1)
+  );
+  const emptyRows = Array(remaining).fill(null);
   
   return (
     <div className="game-grid-container">
