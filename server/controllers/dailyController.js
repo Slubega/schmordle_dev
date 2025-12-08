@@ -5,14 +5,14 @@ const fs = require("fs");
 
 const OFFLINE_MODE = process.env.OFFLINE_DAILY === "true";
 const ALLOW_LOCAL_FALLBACK = process.env.ALLOW_LOCAL_DAILY_FALLBACK !== "false"; // default true
-const RHYME_SETS_PATH = path.join(__dirname, "../../client/src/data/rhymeSets.json");
+const RHYME_SETS_GENERATOR = path.join(__dirname, "../../client/src/data/rhymeSetsGenerated.cjs");
 
 const loadLocalRhymeSets = () => {
   try {
-    const raw = fs.readFileSync(RHYME_SETS_PATH, "utf-8");
-    return JSON.parse(raw);
+    // eslint-disable-next-line import/no-dynamic-require, global-require
+    return require(RHYME_SETS_GENERATOR).rhymeSets;
   } catch (err) {
-    console.error("Failed to read local rhymeSets.json:", err);
+    console.error("Failed to load rhymeSetsGenerated.cjs:", err);
     return [];
   }
 };

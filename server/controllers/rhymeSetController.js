@@ -2,11 +2,11 @@ const path = require("path");
 
 const rhymeSets = (() => {
   try {
-    // Reuse the client-side JSON data for now
+    // Build from the shared generator (CJS for server)
     // eslint-disable-next-line import/no-dynamic-require, global-require
-    return require(path.join(__dirname, "../../client/src/data/rhymeSets.json"));
+    return require(path.join(__dirname, "../../client/src/data/rhymeSetsGenerated.cjs")).rhymeSets;
   } catch (err) {
-    console.error("Failed to load rhymeSets.json:", err);
+    console.error("Failed to load rhymeSetsGenerated.cjs:", err);
     return [];
   }
 })();

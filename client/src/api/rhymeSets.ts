@@ -1,10 +1,11 @@
 import type { RhymeSet } from "../interfaces/types";
-import rhymeSets from "../data/rhymeSets.json";
+// @ts-ignore - JS module exporting generated rhyme sets
+import { rhymeSets as generatedRhymeSets } from "../data/rhymeSetsGenerated.js";
 
 const API_BASE = (import.meta.env.VITE_API_BASE as string | undefined) ?? "";
 
 const getLocalRhymeSet = (id: string): RhymeSet | undefined => {
-  const sets = rhymeSets as RhymeSet[];
+  const sets = generatedRhymeSets as unknown as RhymeSet[];
   return sets.find((s) => s.id === id);
 };
 

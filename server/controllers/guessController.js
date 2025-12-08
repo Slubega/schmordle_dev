@@ -1,12 +1,12 @@
 // server/controllers/guessController.js
 const path = require("path");
 
-// MVP: reuse the same JSON data file (fine for class/MVP)
+// Build rhyme sets dynamically from the shared word list (CJS version for the server)
 let rhymeSets = [];
 try {
-  rhymeSets = require(path.join(__dirname, "../../client/src/data/rhymeSets.json"));
+  ({ rhymeSets } = require(path.join(__dirname, "../../client/src/data/rhymeSetsGenerated.cjs")));
 } catch (e) {
-  console.warn("Could not load rhymeSets.json for guess validation. Falling back to format-only validation.");
+  console.warn("Could not load rhymeSetsGenerated.cjs for guess validation. Falling back to format-only validation.");
 }
 
 exports.validateGuess = (req, res) => {
