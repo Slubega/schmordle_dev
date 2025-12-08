@@ -1,7 +1,6 @@
 import { initializeApp } from 'firebase/app';
 import { getAuth } from 'firebase/auth';
-import firebaseConfig from './firebaseConfig'; // Will be real file once user sets it up
-
+import firebaseConfig from './firebaseConfig'; 
 // Initialize Firebase
 const app = initializeApp(firebaseConfig);
 
