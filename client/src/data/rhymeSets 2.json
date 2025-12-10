@@ -1,0 +1,50 @@
+[
+  {
+    "id": "set_1",
+    "label": "The -AKE Group",
+    "theme": "Common words ending in -AKE",
+    "words": ["SNAKE", "SHAKE", "BRAKE", "STAKE", "FLAKE", "QUAKE", "BREAK", "DRAKE"],
+    "wordThemes": {
+      "SNAKE": "Cold-blooded crawler that hisses",
+      "SHAKE": "What you do to a Polaroid picture",
+      "BRAKE": "Pedal that stops your car",
+      "STAKE": "Pointy vampire deterrent",
+      "FLAKE": "Tiny bit of snow",
+      "QUAKE": "When the ground rumbles",
+      "BREAK": "Quick pause or intermission",
+      "DRAKE": "A male duck (or a Toronto rapper)"
+    }
+  },
+  {
+    "id": "set_2",
+    "label": "The -IGHT Group",
+    "theme": "Illumination and intensity",
+    "words": ["LIGHT", "MIGHT", "NIGHT", "RIGHT", "SIGHT", "TIGHT", "FIGHT", "EIGHT"],
+    "wordThemes": {
+      "LIGHT": "What a bulb gives off",
+      "MIGHT": "Strength or power in reserve",
+      "NIGHT": "After sunset, before sunrise",
+      "RIGHT": "Not left (and also correct)",
+      "SIGHT": "What your eyes provide",
+      "TIGHT": "Snug with no wiggle room",
+      "FIGHT": "When tempers throw punches",
+      "EIGHT": "Seven's next-door neighbor"
+    }
+  },
+  {
+    "id": "set_3",
+    "label": "The -OUND Group",
+    "theme": "Noises and vibrations without naming them",
+    "words": ["SOUND", "BOUND", "FOUND", "ROUND", "MOUND", "POUND", "WOUND", "HOUND"],
+    "wordThemes": {
+      "SOUND": "What your ears pick up",
+      "BOUND": "Tied up or heading toward",
+      "FOUND": "Discovered after searching",
+      "ROUND": "Shaped like a circle",
+      "MOUND": "Small hill of dirt or sand",
+      "POUND": "UK currency or a forceful knock",
+      "WOUND": "An injury that needs a bandage",
+      "HOUND": "Dog built for hunting"
+    }
+  }
+]

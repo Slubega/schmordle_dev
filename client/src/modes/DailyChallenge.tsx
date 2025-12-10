@@ -6,6 +6,7 @@ import { fetchDailyChallenge } from '../api/daily';
 import { fetchRhymeSet } from '../api/rhymeSets';
 import { DailyChallengeConfig, RhymeSet } from '../interfaces/types';
 import { getStats, updateStats } from '../utils/localStorageUtils';
+import { getThemeHint } from '../utils/gameUtils';
 
 const DailyChallenge: React.FC = () => {
   const [config, setConfig] = useState<DailyChallengeConfig | null>(null);
@@ -105,7 +106,7 @@ const DailyChallenge: React.FC = () => {
   return (
     <div className="game-mode-container">
       <h2>Daily Challenge: {config.date} 🗓️</h2>
-      <p className="rhyme-theme">Theme: {rhymeSet.theme}</p>
+      <p className="rhyme-theme">Theme: {getThemeHint(rhymeSet)}</p>
       
       <GameGrid 
         currentGuess={currentGuess} 

@@ -1,17 +1,28 @@
 import { RhymeSet, TileState, LetterState } from '../interfaces/types';
 import rhymeSets from '../data/rhymeSets.json';
 
-// Utility to get a random rhyme set from the local JSON data.
+const pickRandom = <T,>(items: T[]): T => items[Math.floor(Math.random() * items.length)];
+
+// Utility to get a random rhyme set from the local JSON data, selecting a random target word for this session.
 export const getRandomRhymeSet = (): RhymeSet => {
-  const sets = rhymeSets as RhymeSet[];
-  const randomIndex = Math.floor(Math.random() * sets.length);
-  return sets[randomIndex];
+  const sets = rhymeSets as unknown as RhymeSet[];
+  const randomSet = pickRandom(sets);
+  const solutionWord = pickRandom(randomSet.words);
+
+  // Return a copy so we don't mutate the base dataset
+  return { ...randomSet, solutionWord };
 };
 
 // For now, the "solution" is the first word in the set.
 // This keeps the game winnable without leaking the answer up front.
 const getSolutionWord = (rhymeSet: RhymeSet): string => {
-  return (rhymeSet.words[0] || "").toUpperCase();
+  return (rhymeSet.solutionWord || rhymeSet.words[0] || "").toUpperCase();
+};
+
+// Returns a theme/hint for the current target word, falling back to the generic set theme.
+export const getThemeHint = (rhymeSet: RhymeSet): string => {
+  const target = getSolutionWord(rhymeSet);
+  return rhymeSet.wordThemes?.[target] ?? rhymeSet.theme;
 };
 
 /**
@@ -24,7 +35,6 @@ const getSolutionWord = (rhymeSet: RhymeSet): string => {
  */
 export const getGuessFeedback = (guess: string, rhymeSet: RhymeSet): TileState[] => {
   const guessUpper = guess.toUpperCase();
-  const feedback: TileState[] = [];
   const targetWord = getSolutionWord(rhymeSet);
   const targetLetters = targetWord.split('');
   

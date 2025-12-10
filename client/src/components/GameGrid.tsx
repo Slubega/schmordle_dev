@@ -3,7 +3,6 @@ import TileRow from './TileRow';
 import { GuessResult } from '../interfaces/types';
 
 const MAX_GUESSES = 6;
-const WORD_LENGTH = 5;
 
 interface GameGridProps {
   currentGuess: string;

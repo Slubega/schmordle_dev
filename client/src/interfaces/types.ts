@@ -13,6 +13,8 @@ export interface RhymeSet {
   label: string;
   theme: string;
   words: string[]; // List of all valid 5-letter rhyming words for this set
+  wordThemes?: Record<string, string | undefined>; // Optional word-specific hints
+  solutionWord?: string; // Optional selected target word for a session
 }
 
 export interface GuessResult {

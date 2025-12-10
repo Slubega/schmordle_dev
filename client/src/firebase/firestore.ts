@@ -1,4 +1,4 @@
-import { getFirestore, collection, doc, setDoc, query, where, getDocs, onSnapshot, orderBy, limit, serverTimestamp, arrayUnion } from 'firebase/firestore';
+import { getFirestore, collection, doc, setDoc, query, where, getDocs, limit, serverTimestamp, arrayUnion } from 'firebase/firestore';
 import app from './firebase';
 import { RhymeSet, MultiplayerRoom, DailyChallengeConfig, MultiplayerSubmission } from '../interfaces/types';
 import rhymeSets from '../data/rhymeSets.json';
@@ -10,7 +10,7 @@ export const db = getFirestore(app);
 
 // Utility to find a rhyme set by its ID from the local JSON file.
 export const getRhymeSetById = (id: string): RhymeSet | undefined => {
-  const sets = rhymeSets as RhymeSet[];
+  const sets = rhymeSets as unknown as RhymeSet[];
   return sets.find(set => set.id === id);
 };
 
@@ -32,7 +32,7 @@ export const getOrCreateDailyChallenge = async (date: string): Promise<DailyChal
     }
 
     // No configuration found for today, create a new one (simulating admin task)
-    const sets = rhymeSets as RhymeSet[];
+    const sets = rhymeSets as unknown as RhymeSet[];
     const randomIndex = Math.floor(Math.random() * sets.length);
     const newConfig: DailyChallengeConfig = {
         date,
@@ -48,13 +48,11 @@ export const getOrCreateDailyChallenge = async (date: string): Promise<DailyChal
 // --- Multiplayer Functions ---
 
 const ROOMS_COLLECTION = 'multiplayerRooms';
-const SUBMISSIONS_COLLECTION = 'multiplayerSubmissions'; // Submissions can be embedded or in a subcollection
-
-/**
+/** 
  * Creates a new multiplayer room.
  */
 export const createRoom = async (hostId: string, hostName: string): Promise<MultiplayerRoom> => {
-    const sets = rhymeSets as RhymeSet[];
+    const sets = rhymeSets as unknown as RhymeSet[];
     const randomIndex = Math.floor(Math.random() * sets.length);
 
     // Generate a simple 6-character room ID
@@ -134,4 +132,3 @@ export const subscribeToRoom = (roomId: string, callback: (room: MultiplayerRoom
         }
     });
 };
-
