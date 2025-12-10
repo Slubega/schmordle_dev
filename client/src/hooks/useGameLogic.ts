@@ -16,13 +16,13 @@ export const useGameLogic = (
   const [isGameOver, setIsGameOver] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
-  // Reset when the rhyme set changes
+  // Reset when the rhyme set changes (including same id but new solution)
   useEffect(() => {
     setCurrentGuess("");
     setGuesses([]);
     setIsGameOver(false);
     setError(null);
-  }, [rhymeSet?.id]);
+  }, [rhymeSet]);
 
   const submitGuess = useCallback(() => {
     if (!rhymeSet) return;
@@ -51,8 +51,9 @@ export const useGameLogic = (
           console.warn("Backend validation rejected guess:", data?.message ?? "invalid");
         }
 
-        // Dictionary validation: require a real English word
-        const isWord = await isEnglishWord(guess);
+        // Dictionary validation: require a real English word unless it's one of the target rhyme words
+        const isRhymeSetWord = rhymeSet.words.includes(guess);
+        const isWord = isRhymeSetWord || await isEnglishWord(guess);
         if (!isWord) {
           setError("Not a valid word.");
           return;

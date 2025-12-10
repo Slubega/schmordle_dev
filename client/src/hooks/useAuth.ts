@@ -15,7 +15,7 @@ export const useAuth = () => {
       // Local dev bypass when Firebase config is missing
       setUser({
         uid: "local-dev-user",
-        displayName: "Local Dev",
+        displayName: "Player",
         email: undefined,
         isAnonymous: true,
       } as unknown as User);

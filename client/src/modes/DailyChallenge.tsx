@@ -6,7 +6,7 @@ import { fetchDailyChallenge } from '../api/daily';
 import { fetchRhymeSet } from '../api/rhymeSets';
 import { DailyChallengeConfig, RhymeSet } from '../interfaces/types';
 import { getStats, updateStats } from '../utils/localStorageUtils';
-import { getThemeHint } from '../utils/gameUtils';
+import { getThemeHint, getSolutionWord } from '../utils/gameUtils';
 
 const DailyChallenge: React.FC = () => {
   const [config, setConfig] = useState<DailyChallengeConfig | null>(null);
@@ -87,7 +87,7 @@ const DailyChallenge: React.FC = () => {
   if (alreadyCompleted) {
     return (
       <div className="game-mode-container">
-        <h2>Daily Challenge: {config.date} 🗓️</h2>
+        <h2>Daily Challenge: {config.date}</h2>
         <div className="game-message result-message">
           <p className='win'>
             Completed
@@ -100,12 +100,13 @@ const DailyChallenge: React.FC = () => {
   }
 
 
-  const winMessage = `You won! ${winWord} is a correct word in the ${rhymeSet.label} set. Your win has been logged (locally).`;
-  const loseMessage = `Game over. The correct words included: ${rhymeSet.words.join(', ')}.`;
+  const targetWord = getSolutionWord(rhymeSet);
+  const winMessage = `You won! The word was ${targetWord}. Your win has been logged (locally).`;
+  const loseMessage = `Game over. The word was ${targetWord}.`;
 
   return (
     <div className="game-mode-container">
-      <h2>Daily Challenge: {config.date} 🗓️</h2>
+      <h2>Daily Challenge: {config.date}</h2>
       <p className="rhyme-theme">Theme: {getThemeHint(rhymeSet)}</p>
       
       <GameGrid 

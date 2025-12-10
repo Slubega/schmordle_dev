@@ -9,20 +9,22 @@ import './App.css';
 
 const Home: React.FC = () => (
     <div className="home-container">
-        <h2>Welcome to Schmordle!</h2>
-        <p>The rhyming word game where all the correct answers rhyme with each other.</p>
-        <p>Win by guessing *any* of the words in the daily rhyming set.</p>
+        <div className="hero-card">
+          <h2>Welcome to Schmordle!</h2>
+          <p>The rhyming word game where all the correct answers rhyme with each other.</p>
+          <p>Win by guessing *any* of the words in the daily rhyming set.</p>
+        </div>
         <div className="mode-selection">
             <Link to="/solitaire" className="button-primary mode-button">
-                <h3>Solitaire 🧘</h3>
-                <p>Relaxed, random sets, practice mode.</p>
+                <h3>Arcade Solo</h3>
+                <p>Endless single-player rounds with instant replays.</p>
             </Link>
             <Link to="/daily" className="button-primary mode-button">
-                <h3>Daily Challenge 🗓️</h3>
+                <h3>Daily Challenge</h3>
                 <p>New puzzle every day, global leaderboard.</p>
             </Link>
             <Link to="/multiplayer" className="button-primary mode-button">
-                <h3>Multiplayer 🏆</h3>
+                <h3>Multiplayer</h3>
                 <p>Race against friends to find the most rhymes!</p>
             </Link>
         </div>

@@ -44,6 +44,7 @@ export interface MultiplayerRoom {
   hostId: string;
   status: 'lobby' | 'playing' | 'completed';
   players: { [key: string]: string }; // userId: userName
+  durationSeconds?: number;
   startTime?: Timestamp;
   endTime?: Timestamp;
   submissions?: MultiplayerSubmission[];

@@ -2,7 +2,7 @@ import React, { useState, useEffect, useCallback } from 'react';
 import GameGrid from '../components/GameGrid';
 import Keyboard from '../components/Keyboard';
 import { useGameLogic } from '../hooks/useGameLogic';
-import { getRandomRhymeSet, getThemeHint } from '../utils/gameUtils';
+import { getRandomRhymeSet, getThemeHint, getSolutionWord } from '../utils/gameUtils';
 import { RhymeSet, UserStats } from '../interfaces/types';
 import { getSolitaireStats, updateSolitaireStats } from '../utils/localStorageUtils';
 
@@ -54,16 +54,17 @@ const Solitaire: React.FC = () => {
   }
 
   const isWon = isGameOver && winWord !== '';
-  const winMessage = `You won! ${winWord} is a correct word in the ${rhymeSet.label} set.`;
-  const loseMessage = `Game over. The correct words included: ${rhymeSet.words.join(', ')}.`;
+  const targetWord = getSolutionWord(rhymeSet);
+  const winMessage = `You won! The word was ${winWord}.`;
+  const loseMessage = `Game over. The word was ${targetWord}.`;
 
   return (
     <div className="game-mode-container">
-      <h2>Solitaire Mode 🧘</h2>
+      <h2>Arcade Solo</h2>
       <div className="info-box">
-        <p>How it works: You get 6 guesses to find the single target word for this round.</p>
-        <p>The theme is a hint for that one target word, not the whole rhyme set.</p>
-        <p>You win only when you guess the target word; other rhymes are revealed after 6 misses.</p>
+        <p>Guess the single target word in up to 6 tries, then instantly roll into the next round.</p>
+        <p>The theme hints at the target word (not the entire rhyme set).</p>
+        <p>Win or lose, hit Play Another to keep the arcade streak going.</p>
       </div>
       <p className="rhyme-theme">Theme: {getThemeHint(rhymeSet)}</p>
       <div className="stats-box">

@@ -2,7 +2,7 @@ import React, { useState, useEffect, useCallback } from 'react';
 import GameGrid from '../components/GameGrid';
 import Keyboard from '../components/Keyboard';
 import { useGameLogic } from '../hooks/useGameLogic';
-import { getRandomRhymeSet, getThemeHint } from '../utils/gameUtils';
+import { getRandomRhymeSet, getThemeHint, getSolutionWord } from '../utils/gameUtils';
 import { RhymeSet, UserStats } from '../interfaces/types';
 import { getSolitaireStats, updateSolitaireStats } from '../utils/localStorageUtils';
 
@@ -54,12 +54,13 @@ const Solitaire: React.FC = () => {
   }
 
   const isWon = isGameOver && winWord !== '';
-  const winMessage = `You won! ${winWord} is a correct word in the ${rhymeSet.label} set.`;
-  const loseMessage = `Game over. The correct words included: ${rhymeSet.words.join(', ')}.`;
+  const targetWord = getSolutionWord(rhymeSet);
+  const winMessage = `You won! The word was ${winWord}.`;
+  const loseMessage = `Game over. The word was ${targetWord}.`;
 
   return (
     <div className="game-mode-container">
-      <h2>Solitaire Mode 🧘</h2>
+      <h2>Arcade Solo</h2>
       <p className="rhyme-theme">Theme: {getThemeHint(rhymeSet)}</p>
       <div className="stats-box">
         Games Played: {stats.gamesPlayed} | Wins: {stats.gamesWon} | Current Streak: {stats.currentStreak}

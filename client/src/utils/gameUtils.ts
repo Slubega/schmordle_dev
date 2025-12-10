@@ -1,4 +1,4 @@
-import { RhymeSet, TileState, LetterState } from '../interfaces/types';
+import { RhymeSet, TileState } from '../interfaces/types';
 import rhymeSets from '../data/rhymeSets.json';
 
 const pickRandom = <T,>(items: T[]): T => items[Math.floor(Math.random() * items.length)];
@@ -15,7 +15,7 @@ export const getRandomRhymeSet = (): RhymeSet => {
 
 // For now, the "solution" is the first word in the set.
 // This keeps the game winnable without leaking the answer up front.
-const getSolutionWord = (rhymeSet: RhymeSet): string => {
+export const getSolutionWord = (rhymeSet: RhymeSet): string => {
   return (rhymeSet.solutionWord || rhymeSet.words[0] || "").toUpperCase();
 };
 

@@ -2,15 +2,16 @@ import React, { useEffect } from 'react';
 import TileRow from './TileRow';
 import { GuessResult } from '../interfaces/types';
 
-const MAX_GUESSES = 6;
+const DEFAULT_MAX_GUESSES = 6;
 
 interface GameGridProps {
   currentGuess: string;
   guesses: GuessResult[];
   isGameOver: boolean;
+  maxRows?: number;
 }
 
-const GameGrid: React.FC<GameGridProps> = ({ currentGuess, guesses, isGameOver }) => {
+const GameGrid: React.FC<GameGridProps> = ({ currentGuess, guesses, isGameOver, maxRows }) => {
   
   // Listen for keyboard input on the whole window
   useEffect(() => {
@@ -18,9 +19,10 @@ const GameGrid: React.FC<GameGridProps> = ({ currentGuess, guesses, isGameOver }
     // The useGameLogic hook handles the key input, so we don't need a separate listener here
   }, []);
 
+  const totalRows = maxRows ?? DEFAULT_MAX_GUESSES;
   const remaining = Math.max(
     0,
-    MAX_GUESSES - guesses.length - (isGameOver ? 0 : 1)
+    totalRows - guesses.length - (isGameOver ? 0 : 1)
   );
   const emptyRows = Array(remaining).fill(null);
   
@@ -33,7 +35,7 @@ const GameGrid: React.FC<GameGridProps> = ({ currentGuess, guesses, isGameOver }
         ))}
         
         {/* Render current typing row */}
-        {!isGameOver && guesses.length < MAX_GUESSES && (
+        {!isGameOver && guesses.length < totalRows && (
           <TileRow guess={currentGuess} isCurrent={true} />
         )}
         

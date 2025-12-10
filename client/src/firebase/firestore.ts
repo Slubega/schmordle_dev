@@ -1,4 +1,4 @@
-import { getFirestore, collection, doc, setDoc, query, where, getDocs, limit, serverTimestamp, arrayUnion } from 'firebase/firestore';
+import { getFirestore, collection, doc, setDoc, query, where, getDocs, limit, serverTimestamp, arrayUnion, onSnapshot } from 'firebase/firestore';
 import app from './firebase';
 import { RhymeSet, MultiplayerRoom, DailyChallengeConfig, MultiplayerSubmission } from '../interfaces/types';
 import rhymeSets from '../data/rhymeSets.json';
@@ -64,6 +64,7 @@ export const createRoom = async (hostId: string, hostName: string): Promise<Mult
         hostId,
         status: 'lobby',
         players: { [hostId]: hostName },
+        durationSeconds: 120,
         submissions: []
     };
     
@@ -87,13 +88,14 @@ export const joinRoom = async (roomId: string, userId: string, userName: string)
 /**
  * Starts the game and sets the timer.
  */
-export const startGame = async (roomId: string): Promise<void> => {
+export const startGame = async (roomId: string, durationSeconds: number): Promise<void> => {
     const roomRef = doc(db, ROOMS_COLLECTION, roomId);
+    const durationMs = Math.max(30, durationSeconds) * 1000; // minimum 30s to avoid immediate end
     await setDoc(roomRef, { 
         status: 'playing',
         startTime: serverTimestamp(),
-        // Game will run for 120 seconds (2 minutes)
-        endTime: new Date(Date.now() + 120000) 
+        durationSeconds: Math.max(30, durationSeconds),
+        endTime: new Date(Date.now() + durationMs) 
     }, { merge: true });
 };
 
