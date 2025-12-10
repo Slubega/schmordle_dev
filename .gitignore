@@ -8,7 +8,7 @@ client/dist/
 
 # Server
 server/node_modules/
-server/serviceAccount.json
+server/serviceAccount*.json
 
 # Firebase
 firebase/*.secret
